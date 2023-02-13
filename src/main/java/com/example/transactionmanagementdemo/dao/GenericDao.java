@@ -2,6 +2,8 @@ package com.example.transactionmanagementdemo.dao;
 
 
 import com.example.transactionmanagementdemo.domain.entity.Product;
+import com.example.transactionmanagementdemo.domain.entity.User;
+import com.example.transactionmanagementdemo.exception.UserSaveFailedException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +28,6 @@ public abstract class GenericDao<T> {
         Session session = sessionFactory.openSession();
         List<T> list = null;
         try{
-            session = sessionFactory.openSession();
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<T> cq = cb.createQuery(entityClass);
             Root<T> root = cq.from(entityClass);
@@ -44,7 +45,6 @@ public abstract class GenericDao<T> {
         Session session = sessionFactory.openSession();
         Optional<T> object = null;
         try{
-            session = sessionFactory.openSession();
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<T> cq = cb.createQuery(entityClass);
             Root<T> root = cq.from(entityClass);
@@ -60,10 +60,19 @@ public abstract class GenericDao<T> {
         return (object.isPresent())? object.get() : null;
     }
 
+    public void add(T entity) throws UserSaveFailedException {
+        Session session = sessionFactory.openSession();
+        try{
+            session.saveOrUpdate(entity);
+        }
+        catch(Exception e){
+            throw new UserSaveFailedException("can't save this user: " +e.getMessage());
+        }  finally {
+            session.close();
+        }
+    }
 
-
-
-    public void deleteById(T entity){
+    public void delete(T entity){
         Session session;
         try{
             session = sessionFactory.getCurrentSession();

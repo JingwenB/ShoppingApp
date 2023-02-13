@@ -18,6 +18,7 @@ import java.util.List;
 
 public class Watch {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "watch_id")
     private Integer watch_id;
 
@@ -30,4 +31,9 @@ public class Watch {
     @ToString.Exclude
     @JoinColumn(name = "product_id")
     private Product product;
+
+    public Watch(User user, Product product) {
+        this.user = user;
+        this.product = product;
+    }
 }

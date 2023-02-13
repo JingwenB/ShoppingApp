@@ -4,6 +4,7 @@ import com.example.transactionmanagementdemo.dao.ProductDao;
 import com.example.transactionmanagementdemo.dao.UserDao;
 import com.example.transactionmanagementdemo.domain.entity.Product;
 import com.example.transactionmanagementdemo.domain.entity.User;
+import com.example.transactionmanagementdemo.domain.entity.Watch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +19,6 @@ public class ProductService {
     public ProductService(ProductDao productDao) {
         this.productDao = productDao;
     }
-
-    @Transactional
-    public void saveProduct(Product product) {
-        productDao.add(product);
-    }
-
 
     @Transactional
     public List<Product> getAll(){
@@ -53,6 +48,10 @@ public class ProductService {
         return products;
     }
 
+    @Transactional
+    public void createProduct(Product product)  {
+        productDao.add(product);
+    }
 
 
 

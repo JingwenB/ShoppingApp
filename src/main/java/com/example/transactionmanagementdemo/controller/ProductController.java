@@ -48,19 +48,16 @@ public class ProductController {
                 .build();
     }
 
-    @PutMapping("/admin/list")
+    @PutMapping("/admin")
     public ProductResponse saveProduct(
             @RequestBody Product product){
-        productService.saveProduct(product);
+        productService.createProduct(product);
 
         return ProductResponse.builder()
                 .message("product saved, committing...")
                 .product(product)
                 .build();
     }
-
-//    @PutMapping("/admin/id/{id}")
-
 
 
 

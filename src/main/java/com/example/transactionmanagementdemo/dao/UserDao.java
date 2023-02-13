@@ -18,30 +18,5 @@ public class UserDao extends GenericDao<User> {
         entityClass = User.class;
     }
 
-    public void add(User entity) throws UserSaveFailedException {
-        Session session = sessionFactory.openSession();
-        try{
-            session = sessionFactory.getCurrentSession();
-            session.saveOrUpdate(entity);
-        }
-        catch(Exception e){
-            throw new UserSaveFailedException("can't save this user: " +e.getMessage());
-        }  finally {
-            session.close();
-        }
-    }
-
-    public void delete(User entity) throws UserGetFailedException {
-        Session session = sessionFactory.openSession();
-        try{
-            session = sessionFactory.getCurrentSession();
-            session.delete(entity);
-        }
-        catch (Exception e){
-            throw new UserSaveFailedException("can't delete this user: " +e.getMessage());
-        }  finally {
-            session.close();
-        }
-    }
 
 }
