@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public class WatchDao extends GenericDao {
+public class WatchDao extends GenericDao<Watch> {
 
     public WatchDao() {
         entityClass = Watch.class;

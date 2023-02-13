@@ -38,15 +38,11 @@ public class User {
     @Column(name = "is_admin")
     private Boolean is_admin;
 
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "USER")// default fetch type is LAZY
-//    @ToString.Exclude // to avoid infinite loop
-//    private Set<Order> orders = new HashSet<>(0);
-
+    // one to many
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<Order> orders;
-
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

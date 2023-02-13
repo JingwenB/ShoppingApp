@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public class UserDao extends GenericDao {
+public class UserDao extends GenericDao<User> {
 
     public UserDao() {
         entityClass = User.class;

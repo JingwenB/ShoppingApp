@@ -1,8 +1,10 @@
 package com.example.transactionmanagementdemo.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name="product")
@@ -31,4 +33,17 @@ public class Product {
 
     @Column(name = "stock_quantity")
     private Double stock_quantity;
+
+
+    // one to many
+    @JsonIgnore
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private List<Watch> watches;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private List<OrderItem> orderItems;
+
 }

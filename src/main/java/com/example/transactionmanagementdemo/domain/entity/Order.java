@@ -5,9 +5,10 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
-@Table(name="order")
+@Table(name="orderTable")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,10 +26,16 @@ public class Order {
     @Column(name = "date_placed")
     private Timestamp date_placed;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @ToString.Exclude
-    @JsonIgnore
     private User user;
+
+
+    // one to many
+    @JsonIgnore
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private List<OrderItem> orderItems;
 
 }

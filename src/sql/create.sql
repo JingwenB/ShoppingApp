@@ -22,7 +22,7 @@ create table if not exists Product
     stock_quantity int
     );
 
-drop table if exists `Order`;
+drop table if exists OrderTable;
 create table if not exists `Order`
 (
     order_id int primary key auto_increment,
@@ -42,7 +42,7 @@ create table if not exists OrderItem
     purchased_price double,
     purchased_quantity int,
     FOREIGN KEY (product_id) REFERENCES Product(product_id),
-    FOREIGN KEY (order_id) REFERENCES `Order`(order_id)
+    FOREIGN KEY (order_id) REFERENCES OrderTable(order_id)
     );
 
 drop table if exists Watch;

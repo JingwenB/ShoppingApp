@@ -13,21 +13,16 @@ import java.util.List;
 @Service
 public class UserService {
     private  UserDao userDao;
-    private  OrderService orderService;
 
     @Autowired
-    public UserService(UserDao userDao, OrderService orderService) {
+    public UserService(UserDao userDao) {
         this.userDao = userDao;
-        this.orderService = orderService;
     }
 
 
     @Transactional
     public List<User> getAll(){
         List<User> users = userDao.getAll();
-//        users.forEach((user) ->{
-//            user.setOrders(orderService.getByUserId(user.getId()));
-//        });
         return users;
     }
 

@@ -31,10 +31,10 @@ public class OrderService {
     @Transactional
     public List<Order> getByUserId(int id){
         List<Order> orders =  orderDao.getAll();
-        orders.stream().filter(
-                (order)->order.getId() == id).collect(Collectors.toList());
 
-        return orders;
+        return orders.stream().filter(
+                (order)->order.getUser().getId() == id).collect(Collectors.toList());
+
     }
 
 

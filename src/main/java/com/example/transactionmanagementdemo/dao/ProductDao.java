@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public class ProductDao extends GenericDao {
+public class ProductDao extends GenericDao<Product> {
 
 
     public ProductDao() {
