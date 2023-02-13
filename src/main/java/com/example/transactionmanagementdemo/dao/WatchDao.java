@@ -20,16 +20,19 @@ public class WatchDao extends GenericDao<Watch> {
 
 
     public Watch createWatch(int user_id, int product_id) {
+
         Session session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
         User user = session.load(User.class, user_id);
         Product product = session.load(Product.class, product_id);
 
-        Watch watch = new Watch(user, product);
+        Watch watch = new Watch();
+        watch.setUser(user);
+        watch.setProduct(product);
 
-        int id = (Integer) session.save(watch);
-        watch.setWatch_id(id);
+        session.saveOrUpdate(watch);
+        transaction.commit();
         session.close();
-
         return watch;
     }
 }
