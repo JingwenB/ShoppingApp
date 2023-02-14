@@ -30,12 +30,12 @@ public class UserController {
         return userService.getAll();
     }
 
-    @GetMapping("/id/{id}")
-    public UserResponse getUserById(@PathVariable int id)  throws UserGetFailedException {
+    @GetMapping("/{user_id}")
+    public UserResponse getUserById(@PathVariable int user_id)  throws UserGetFailedException {
 
-        User user = userService.getById(id);
+        User user = userService.getById(user_id);
         return UserResponse.builder()
-                .message("Returning user with id: " + id)
+                .message("Returning user with id: " + user_id)
                 .user(user)
                 .build();
     }
@@ -51,11 +51,13 @@ public class UserController {
                 .build();
     }
 
-    @DeleteMapping ("/id/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable int id)  throws UserGetFailedException {
-        userService.deleteUser(id);
+    @DeleteMapping ("/{user_id}")
+    public ResponseEntity<String> deleteUser(@PathVariable int user_id)  throws UserGetFailedException {
+        userService.deleteUser(user_id);
 
         return new ResponseEntity<>("User deleted.", HttpStatus.OK);
     }
+
+
 
 }

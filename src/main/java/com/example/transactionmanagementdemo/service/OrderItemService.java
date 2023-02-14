@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,10 +31,10 @@ public class OrderItemService {
 
     @Transactional
     public List<OrderItem> getByUserId(int id){
-        List<OrderItem> orderItems =  orderItemDao.getAll();
 
-        return orderItems.stream().filter(
-                (order)->order.getOrder().getUser().getId() == id).collect(Collectors.toList());
+        return orderItemDao.getAll().stream().filter(
+                (order) -> order.getOrder().getUser().getId() == id).
+                sorted(Comparator.comparing(a -> a.getOrder().getDate_placed())).collect(Collectors.toList());
     }
 
     @Transactional
@@ -41,6 +44,8 @@ public class OrderItemService {
         return orderItems.stream().filter(
                 (order)->order.getOrder().getId() == id).collect(Collectors.toList());
     }
+
+
 
 
 

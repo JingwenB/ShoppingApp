@@ -13,41 +13,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class UserService {
+public class WatchListService {
     private  UserDao userDao;
 
     @Autowired
-    public UserService(UserDao userDao) {
+    public WatchListService(UserDao userDao) {
         this.userDao = userDao;
     }
 
 
     @Transactional
-    public List<User> getAll(){
-        List<User> users = userDao.getAll();
-        return users;
-    }
-
-    @Transactional
-    public User getById(int id) throws UserGetFailedException{
-         User user = (User) userDao.getById(id);
-         if(user == null){
-             throw new UserGetFailedException("can't find user with id: " + id);
-         }
-        return user;
-    }
-
-    @Transactional
-    public void saveUser(User user) throws UserSaveFailedException {
-        userDao.add(user);
-    }
-
-    @Transactional
-    public void deleteUser(int id) throws UserGetFailedException {
-        User user = getById(id);
-        userDao.delete(user);
-    }
-
     public List<Product> getWatchListItemByUserId(Integer user_id) {
         User u = userDao.getById(user_id);
         return u.getProducts()
@@ -55,8 +30,19 @@ public class UserService {
                 .filter((product -> product.getStock_quantity() > 0)).collect(Collectors.toList());
     }
 
+    @Transactional
     public List<Product> deleteProductFromUserWatchList(Integer user_id, Integer product_id) {
         userDao.deleteProduct(user_id, product_id);
         return getWatchListItemByUserId(user_id);
     }
+
+    @Transactional
+    public List<Product> addToWatchList(Integer user_id, Integer product_id) {
+        userDao.addToWatchList(user_id, product_id);
+
+        return getWatchListItemByUserId(user_id);
+
+    }
+
+
 }

@@ -29,6 +29,10 @@ public class OrderService {
     }
 
     @Transactional
+    public Order getById(int id){
+        return orderDao.getById(id);
+    }
+    @Transactional
     public List<Order> getByUserId(int id){
         List<Order> orders =  orderDao.getAll();
 
@@ -37,6 +41,13 @@ public class OrderService {
 
     }
 
+    public Order completeOrder(int id) {
+        orderDao.completeOrder(id);
+        return getById(id);
+    }
 
-
+    public Order cancelOrder(int id) {
+        orderDao.cancelOrder(id);
+        return getById(id);
+    }
 }

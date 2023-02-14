@@ -1,15 +1,13 @@
 package com.example.transactionmanagementdemo.service;
 
 import com.example.transactionmanagementdemo.dao.ProductDao;
-import com.example.transactionmanagementdemo.dao.UserDao;
 import com.example.transactionmanagementdemo.domain.entity.Product;
-import com.example.transactionmanagementdemo.domain.entity.User;
-import com.example.transactionmanagementdemo.domain.entity.Watch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -40,19 +38,27 @@ public class ProductService {
 
     @Transactional
     public List<Product> getAllAsUser(){
-        List<Product> products  = productDao.getAll();
-        products.stream().filter(product -> product.getStock_quantity() > 0).forEach((product -> {
+        List<Product> products = productDao.getAll().stream().filter(product -> product.getStock_quantity() > 0)
+                .map((product) ->{
                     product.setStock_quantity(null);
                     product.setWholesale_price(null);
-                }));
+                    return product;
+                }).collect(Collectors.toList());
         return products;
     }
 
     @Transactional
-    public void createProduct(Product product)  {
+    public List<Product> createProduct(Product product)  {
         productDao.add(product);
+        return getAll();
     }
 
+    @Transactional
+    public Product update(Integer id, Product product) {
+        productDao.update(id, product);
+
+        return productDao.getById(id);
+    }
 
 
 }

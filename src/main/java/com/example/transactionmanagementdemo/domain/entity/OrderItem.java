@@ -27,12 +27,12 @@ public class OrderItem {
     @Column(name = "purchased_quantity", nullable = false)
     private Integer purchased_quantity;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "Order_id", nullable = false)
     @ToString.Exclude
     private Order order;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "Product_id", nullable = false)
     @ToString.Exclude
     private Product product;

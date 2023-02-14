@@ -2,6 +2,7 @@ package com.example.transactionmanagementdemo.controller;
 
 import com.example.transactionmanagementdemo.domain.entity.Product;
 import com.example.transactionmanagementdemo.domain.entity.User;
+import com.example.transactionmanagementdemo.domain.response.AllProductResponse;
 import com.example.transactionmanagementdemo.domain.response.ProductResponse;
 import com.example.transactionmanagementdemo.domain.response.UserResponse;
 import com.example.transactionmanagementdemo.service.ProductService;
@@ -30,34 +31,49 @@ public class ProductController {
         return productService.getAllAsUser();
     }
 
-    @GetMapping("/admin/id/{id}")
-    public ProductResponse getProductById(@PathVariable int id){
-        Product product = productService.getById(id);
+    // admin get product,  visible to all attribute
+    @GetMapping("/admin/{product_id}")
+    public ProductResponse getProductById(@PathVariable int product_id){
+        Product product = productService.getById(product_id);
         return ProductResponse.builder()
-                .message("Returning product with id: " + id)
+                .message("Returning product with id: " + product_id)
                 .product(product)
                 .build();
     }
 
-    @GetMapping("/user/id/{id}")
-    public ProductResponse getProductByIdAsUser(@PathVariable int id){
-        Product product = productService.getByIdAsUser(id);
+    // user get product, not visible to stock quantity and wholesale price
+    @GetMapping("/user/{product_id}")
+    public ProductResponse getProductByIdAsUser(@PathVariable int product_id){
+        Product product = productService.getByIdAsUser(product_id);
         return ProductResponse.builder()
-                .message("Returning product with id: " + id)
+                .message("Returning product with id: " + product_id)
                 .product(product)
                 .build();
     }
 
     @PutMapping("/admin")
-    public ProductResponse saveProduct(
+    public AllProductResponse saveProduct(
             @RequestBody Product product){
-        productService.createProduct(product);
+        List<Product> products = productService.createProduct(product);
 
-        return ProductResponse.builder()
+        return AllProductResponse.builder()
                 .message("product saved, committing...")
-                .product(product)
+                .products(products)
                 .build();
     }
+
+    @PutMapping("/update/{id}")
+    public ProductResponse updateProduct(
+            @PathVariable Integer id,
+            @RequestBody Product product){
+        Product addedProduct = productService.update(id, product);
+
+        return ProductResponse.builder()
+                .message("updated product with id: " + id)
+                .product(addedProduct)
+                .build();
+    }
+
 
 
 

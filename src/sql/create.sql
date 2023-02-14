@@ -23,7 +23,7 @@ create table if not exists Product
     );
 
 drop table if exists OrderTable;
-create table if not exists `Order`
+create table if not exists OrderTable
 (
     order_id int primary key auto_increment,
     user_id int,
@@ -50,7 +50,7 @@ create table if not exists Watch
 (
     product_id int,
     user_id int,
-    PRIMARY KEY (product_id, user_id),
+    PRIMARY KEY (user_id, product_id),
     FOREIGN KEY (product_id) REFERENCES Product(product_id),
     FOREIGN KEY (user_id) REFERENCES User(user_id)
-    );
+ );

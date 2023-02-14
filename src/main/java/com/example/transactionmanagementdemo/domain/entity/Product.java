@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name="product")
@@ -13,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Builder
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,13 +39,18 @@ public class Product {
 
     // one to many
     @JsonIgnore
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @ToString.Exclude
-    private List<Watch> watches;
+    private Set<OrderItem> orderItems;
 
+    // ManyToMany
+    @ManyToMany(cascade = { CascadeType.ALL },fetch = FetchType.EAGER)
     @JsonIgnore
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    @ToString.Exclude
-    private List<OrderItem> orderItems;
+    @JoinTable(
+            name = "ProductWatchList",
+            joinColumns = { @JoinColumn(name = "product_id") },
+            inverseJoinColumns = { @JoinColumn(name = "user_id") }
+    )
+    private List<User> user;
 
 }
