@@ -1,11 +1,13 @@
 package com.example.transactionmanagementdemo.service;
 
 import com.example.transactionmanagementdemo.dao.OrderDao;
-import com.example.transactionmanagementdemo.dao.UserDao;
+import com.example.transactionmanagementdemo.dao.OrderItemDao;
+import com.example.transactionmanagementdemo.dao.ProductDao;
 import com.example.transactionmanagementdemo.domain.entity.Order;
-import com.example.transactionmanagementdemo.domain.entity.User;
-import com.example.transactionmanagementdemo.exception.UserGetFailedException;
-import com.example.transactionmanagementdemo.exception.UserSaveFailedException;
+import com.example.transactionmanagementdemo.domain.entity.OrderItem;
+import com.example.transactionmanagementdemo.domain.entity.Product;
+import com.example.transactionmanagementdemo.domain.request.CreateOrderRequest;
+import com.example.transactionmanagementdemo.exception.NotEnoughInventoryException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +18,16 @@ import java.util.stream.Collectors;
 @Service
 public class OrderService {
     private OrderDao orderDao;
+    private ProductDao productDao;
+    private OrderItemDao orderItemDao;
 
     @Autowired
-    public OrderService(OrderDao orderDao) {
+    public OrderService(OrderDao orderDao,
+                        ProductDao productDao,
+                        OrderItemDao orderItemDao) {
         this.orderDao = orderDao;
+        this.productDao = productDao;
+        this.orderItemDao = orderItemDao;
     }
 
 
@@ -49,5 +57,12 @@ public class OrderService {
     public Order cancelOrder(int id) {
         orderDao.cancelOrder(id);
         return getById(id);
+    }
+
+    public void createOrder(List<CreateOrderRequest> createOrderRequest,
+                            Integer user_id) throws NotEnoughInventoryException {
+
+
+        orderDao.createOrder(createOrderRequest, user_id) ;
     }
 }

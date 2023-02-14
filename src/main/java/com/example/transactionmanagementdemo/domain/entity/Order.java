@@ -32,7 +32,6 @@ public class Order {
     @ToString.Exclude
     private User user;
 
-
     // one to many
     @JsonIgnore
     @OneToMany(mappedBy = "order",fetch = FetchType.EAGER, cascade = CascadeType.ALL)

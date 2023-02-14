@@ -34,8 +34,7 @@ public class Product {
     private Double retail_price;
 
     @Column(name = "stock_quantity")
-    private Double stock_quantity;
-
+    private Integer stock_quantity;
 
     // one to many
     @JsonIgnore
