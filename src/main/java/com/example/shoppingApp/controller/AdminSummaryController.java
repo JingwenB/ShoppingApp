@@ -42,6 +42,17 @@ public class AdminSummaryController {
                         data);
     }
 
+    @GetMapping(value = "/order/all", params = { "page", "size"})
+    public ResponseEntity<Object> getAllProductPaginated(@RequestParam(value = "page") int page,
+                                                         @RequestParam(value = "size") int size){
+        JSONObject data = orderService.getPaginatedOrder(page, size);
+
+        return ResponseHandler.generateResponse(
+                "returning all order with pagination",
+                HttpStatus.OK,
+                data);
+    }
+
     // get order list for user
     @GetMapping("/order/user")
     public ResponseEntity<Object> getOrderByUserId(@RequestParam(value = "user_id")

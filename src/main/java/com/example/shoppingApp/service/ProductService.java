@@ -2,10 +2,13 @@ package com.example.shoppingApp.service;
 
 import com.example.shoppingApp.dao.ProductDao;
 import com.example.shoppingApp.domain.entity.Product;
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sun.jvm.hotspot.debugger.Page;
 
 import javax.transaction.Transactional;
+import java.awt.print.Pageable;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,4 +64,32 @@ public class ProductService {
     }
 
 
+    @Transactional
+    public JSONObject getPaginatedProduct(int page, int size) {
+        return findPaginated(productDao.getAll(), page, size);
+    }
+
+    @Transactional
+    public JSONObject getPaginatedProductAsUser(int page, int size) {
+        return findPaginated(getAllAsUser(), page, size);
+    }
+
+    public JSONObject findPaginated(List<Product> items, int page, int size) {
+        int totalItems = items.size();
+        int totalPages = (int) Math.floor((double)items.size() /(double)size);
+        // 10/3 => 4 page, 0,1,2 | 3,4,5|6,7,8|9
+        //               page 1
+        if (page > totalPages){
+            // throw error
+        }
+        JSONObject ret  = new JSONObject();
+        ret.put("totalPages", totalPages);
+        ret.put("totalItems", totalItems);
+        ret.put("currentPage", page);
+        ret.put("pageSize", size);
+        List<Product> currentItems = items.subList(
+                size * (page - 1), Math.min(size* page, items.size()) );
+        ret.put("currentItems", currentItems);
+        return ret;
+    }
 }
