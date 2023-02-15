@@ -5,7 +5,6 @@ import lombok.*;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -48,4 +47,6 @@ public class User {
     @ManyToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Product> products;
 
+    @Transient
+    private Double moneySpent = 0.0;
 }

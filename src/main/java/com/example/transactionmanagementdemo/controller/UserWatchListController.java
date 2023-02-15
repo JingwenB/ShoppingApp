@@ -12,19 +12,19 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("watchlist")
-public class WatchListController {
+@RequestMapping("user/watchlist")
+public class UserWatchListController {
     private final WatchListService watchListService;
 
     @Autowired
-    public WatchListController(WatchListService watchListService) {
+    public UserWatchListController(WatchListService watchListService) {
         this.watchListService = watchListService;
     }
 
-    @PutMapping("/{user_id}/{product_id}")
+    @PutMapping("/add")
     public AllProductResponse addWatchList(
-            @PathVariable Integer user_id,
-            @PathVariable Integer product_id){
+            @RequestParam(value = "user_id") Integer user_id,
+            @RequestParam(value = "product_id") Integer product_id){
         List<Product> products = watchListService.addToWatchList(user_id, product_id);
 
         return AllProductResponse.builder()
@@ -34,10 +34,10 @@ public class WatchListController {
                 .build();
     }
 
-    @DeleteMapping("/{user_id}/{product_id}")
+    @DeleteMapping("/delete")
     public AllProductResponse deleteProductFromUserWatchList(
-            @PathVariable Integer user_id,
-            @PathVariable Integer product_id){
+            @RequestParam(value = "user_id") Integer user_id,
+            @RequestParam(value = "product_id") Integer product_id){
 
         List<Product> products = watchListService.deleteProductFromUserWatchList(user_id, product_id);
 
@@ -48,9 +48,9 @@ public class WatchListController {
                 .build();
     }
 
-    @GetMapping("/{user_id}")
+    @GetMapping("/getList")
     public AllProductResponse getWatchListItemByUserId(
-            @PathVariable Integer user_id){
+            @RequestParam(value = "user_id") Integer user_id){
         List<Product> products = watchListService.getWatchListItemByUserId(user_id);
 
         return AllProductResponse.builder()

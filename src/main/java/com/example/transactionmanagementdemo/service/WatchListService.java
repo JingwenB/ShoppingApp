@@ -27,7 +27,14 @@ public class WatchListService {
         User u = userDao.getById(user_id);
         return u.getProducts()
                 .stream()
-                .filter((product -> product.getStock_quantity() > 0)).collect(Collectors.toList());
+                .filter((product -> product.getStock_quantity() > 0))
+                .map((product) ->{
+                    product.setStock_quantity(null);
+                    product.setWholesale_price(null);
+                    return product;
+                })
+                .collect(Collectors.toList());
+
     }
 
     @Transactional

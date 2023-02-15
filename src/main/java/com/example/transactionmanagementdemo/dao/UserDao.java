@@ -27,9 +27,10 @@ public class UserDao extends GenericDao<User> {
         Transaction tx = session.beginTransaction();
         User user = session.load(User.class, user_id);
         Product product = session.load(Product.class, product_id);
-
+        user.getProducts().remove(product);
         product.getUser().remove(user);
-        session.persist(product);
+        session.saveOrUpdate(product);
+        session.saveOrUpdate(user);
         tx.commit();
         session.close();
     }

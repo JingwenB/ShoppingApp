@@ -52,4 +52,21 @@ public class Product {
     )
     private List<User> user;
 
+    @Transient
+    private Double profit = 0.0;
+
+    @Transient
+    private Integer sold_quantity = 0;
+
+
+
+
+//
+//    public void setOrdersProfit(){
+//        this.profit =  orderItems.stream()
+//                .mapToDouble((item)-> item.getPurchased_quantity()*(item.getPurchased_price()
+//                        - item.getWholesale_price()))
+//                .sum();
+//
+//    }
 }

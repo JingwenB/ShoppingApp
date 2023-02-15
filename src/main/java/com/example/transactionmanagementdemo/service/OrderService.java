@@ -49,20 +49,25 @@ public class OrderService {
 
     }
 
+    @Transactional
     public Order completeOrder(int id) {
         orderDao.completeOrder(id);
         return getById(id);
     }
 
+    @Transactional
     public Order cancelOrder(int id) {
         orderDao.cancelOrder(id);
         return getById(id);
     }
 
+    @Transactional
     public void createOrder(List<CreateOrderRequest> createOrderRequest,
                             Integer user_id) throws NotEnoughInventoryException {
 
 
         orderDao.createOrder(createOrderRequest, user_id) ;
     }
+
+
 }
