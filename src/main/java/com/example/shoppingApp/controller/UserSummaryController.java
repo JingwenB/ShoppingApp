@@ -3,11 +3,13 @@ package com.example.shoppingApp.controller;
 import com.example.shoppingApp.domain.entity.Order;
 import com.example.shoppingApp.domain.entity.OrderItem;
 import com.example.shoppingApp.domain.entity.Product;
-import com.example.shoppingApp.domain.response.AllProductResponse;
-import com.example.shoppingApp.domain.response.OrderDetailResponse;
+import com.example.shoppingApp.domain.response.ResponseHandler;
 import com.example.shoppingApp.service.OrderService;
 import com.example.shoppingApp.service.SummaryService;
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,7 +38,7 @@ public class UserSummaryController {
 
     // user view order detailsshould not see product quantity and Wholesale_price
     @GetMapping("/order/detail")
-    public OrderDetailResponse getOrderDetail(@RequestParam(value = "order_id") int order_id){
+    public ResponseEntity<Object> getOrderDetail(@RequestParam(value = "order_id") int order_id){
         Order o = orderService.getById(order_id);
         List<OrderItem> orderItems = o.getOrderItems()
                 .stream().map((orderItem) -> {
@@ -44,33 +46,39 @@ public class UserSummaryController {
                     orderItem.getProduct().setStock_quantity(null);
                     return orderItem;})
                 .collect(Collectors.toList());
-        return OrderDetailResponse.builder()
-                .message("get order details for Order: " + order_id)
-                .order(o)
-                .orderItems(orderItems)
-                .build();
+        JSONObject data = new JSONObject();
+        data.put("order", o);
+        data.put("orderItems", orderItems);
+
+        return ResponseHandler
+                .generateResponse(
+                        "get order details for Order: " + order_id,
+                        HttpStatus.OK,
+                        data);
     }
 
     @GetMapping("/product/topItem")
-    public AllProductResponse getTopKItem(@RequestParam(value = "user_id") Integer user_id,
+    public ResponseEntity<Object> getTopKItem(@RequestParam(value = "user_id") Integer user_id,
                                           @RequestParam(value = "num") Integer num){
         List<Product> products = summaryService.topKPurchasedProductByUser(user_id, num);
 
-        return AllProductResponse.builder()
-                .message("return top frequent purchased item by user: " + user_id)
-                .products(products)
-                .build();
+        return ResponseHandler
+                .generateResponse(
+                        "return top "+num+" frequent purchased item by user: " + user_id,
+                        HttpStatus.OK,
+                        products);
     }
 
     @GetMapping("/product/mostRecentProduct")
-    public AllProductResponse getMostRecentKProduct(@RequestParam(value = "user_id") Integer user_id,
+    public ResponseEntity<Object> getMostRecentKProduct(@RequestParam(value = "user_id") Integer user_id,
                                           @RequestParam(value = "num") Integer num){
         List<Product> products = summaryService.mostKRecentPurchaseByUser(user_id, num);
 
-        return AllProductResponse.builder()
-                .message("return most recent purchased item by user: " + user_id)
-                .products(products)
-                .build();
+        return ResponseHandler
+                .generateResponse(
+                        "return most "+ num +" recent purchased item by user: " + user_id,
+                        HttpStatus.OK,
+                        products);
     }
 
 

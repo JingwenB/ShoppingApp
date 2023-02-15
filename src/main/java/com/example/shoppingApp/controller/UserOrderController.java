@@ -3,12 +3,13 @@ package com.example.shoppingApp.controller;
 import com.example.shoppingApp.domain.entity.Order;
 import com.example.shoppingApp.domain.entity.OrderItem;
 import com.example.shoppingApp.domain.request.CreateOrderRequest;
-import com.example.shoppingApp.domain.response.CreateOrderResponse;
-import com.example.shoppingApp.domain.response.OrderDetailResponse;
-import com.example.shoppingApp.domain.response.OrderResponse;
+import com.example.shoppingApp.domain.response.ResponseHandler;
 import com.example.shoppingApp.exception.NotEnoughInventoryException;
 import com.example.shoppingApp.service.OrderService;
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public class UserOrderController {
 
     // user should not see product quantity and Wholesale_price
     @GetMapping("/order_id/{order_id}")
-    public OrderDetailResponse getOrderDetail(@PathVariable(value = "order_id")  Integer order_id){
+    public ResponseEntity<Object>  getOrderDetail(@PathVariable(value = "order_id")  Integer order_id){
         Order o = orderService.getById(order_id);
         List<OrderItem> orderItems = o.getOrderItems()
                 .stream().map((orderItem) -> {
@@ -43,45 +44,49 @@ public class UserOrderController {
                     orderItem.getProduct().setStock_quantity(null);
                     return orderItem;})
                 .collect(Collectors.toList());
-        return OrderDetailResponse.builder()
-                .message("get order details for Order: " + order_id)
-                .order(o)
-                .orderItems(orderItems)
-                .build();
+
+        JSONObject data = new JSONObject();
+        data.put("order", o);
+        data.put("orderItems", orderItems);
+
+        return ResponseHandler
+                .generateResponse(
+                        "get order details for Order: " + order_id,
+                        HttpStatus.OK,
+                        data);
     }
 
 
 
     @PutMapping("/cancel")
-    public OrderResponse cancelOrder(@RequestParam int order_id){
+    public ResponseEntity<Object>  cancelOrder(@RequestParam int order_id){
         Order updatedOrder = orderService.cancelOrder(order_id);
 
-        return OrderResponse.builder()
-                .message("Updated order Id:" + order_id + " to cancel")
-                .order(updatedOrder)
-                .build();
+        JSONObject data = new JSONObject();
+        data.put("updatedOrder", updatedOrder);
+
+        return ResponseHandler
+                .generateResponse("Updated order Id:" + order_id + " to cancel",
+                        HttpStatus.OK,
+                        data);
 
     }
 
     @PostMapping("/create")
-    public CreateOrderResponse createOrder(
+    public ResponseEntity<Object> createOrder(
             @RequestBody List<CreateOrderRequest> createOrderRequest,
-            @RequestParam Integer user_id) {
-        try{
-            orderService.createOrder(createOrderRequest, user_id);
-            return CreateOrderResponse.builder()
-                    .message("successfully created a order, " +
-                            "returning all orders by this user...")
-                    .orders(orderService.getByUserId(user_id))
-                    .build();
-        } catch (NotEnoughInventoryException e){
-            return CreateOrderResponse.builder()
-                    .message("created a order failed with error: " +
-                            e.getMessage() +
-                            "\nreturning all orders by this user...")
-                    .orders(orderService.getByUserId(user_id))
-                    .build();
-        }
+            @RequestParam Integer user_id) throws NotEnoughInventoryException{
+
+        orderService.createOrder(createOrderRequest, user_id);
+
+        JSONObject data = new JSONObject();
+        data.put("All orders", orderService.getByUserId(user_id));
+
+        return ResponseHandler
+                .generateResponse("successfully created a order, " +
+                                    "returning all orders by this user...",
+                        HttpStatus.OK,
+                        data);
 
     }
 

@@ -1,9 +1,12 @@
 package com.example.shoppingApp.controller;
 
 import com.example.shoppingApp.domain.entity.Order;
-import com.example.shoppingApp.domain.response.OrderResponse;
+import com.example.shoppingApp.domain.response.ResponseHandler;
 import com.example.shoppingApp.service.OrderService;
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,24 +21,30 @@ public class AdminOrderController {
     }
 
     @PutMapping("/complete/{order_id}")
-    public OrderResponse completeOrder(@PathVariable int order_id){
+    public ResponseEntity<Object> completeOrder(@PathVariable int order_id){
          Order updatedOrder = orderService.completeOrder(order_id);
 
-         return
-                 OrderResponse.builder()
-                 .message("Updated order Id:" + order_id + " to complete")
-                 .order(updatedOrder)
-                 .build();
+        JSONObject data = new JSONObject();
+        data.put("order", updatedOrder);
+
+         return ResponseHandler.generateResponse(
+                 "Updated order Id:" + order_id + " to complete",
+                 HttpStatus.OK,
+                 data
+                 );
     }
 
     @PutMapping("/cancel/{order_id}")
-    public OrderResponse cancelOrder(@PathVariable int order_id){
+    public ResponseEntity<Object> cancelOrder(@PathVariable int order_id){
         Order updatedOrder = orderService.cancelOrder(order_id);
 
-        return OrderResponse.builder()
-                .message("Updated order Id:" + order_id + " to cancel")
-                .order(updatedOrder)
-                .build();
+        JSONObject data = new JSONObject();
+        data.put("order", updatedOrder);
+        return ResponseHandler.generateResponse(
+                "Updated order Id:" + order_id + " to complete",
+                HttpStatus.OK,
+                data
+        );
 
     }
 

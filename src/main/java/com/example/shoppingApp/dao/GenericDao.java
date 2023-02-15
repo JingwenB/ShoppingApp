@@ -1,7 +1,6 @@
 package com.example.shoppingApp.dao;
 
 
-import com.example.shoppingApp.exception.UserSaveFailedException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,13 +57,13 @@ public abstract class GenericDao<T> {
         return (object.isPresent())? object.get() : null;
     }
 
-    public void add(T entity) throws UserSaveFailedException {
+    public void add(T entity)  {
         Session session = sessionFactory.openSession();
         try{
             session.saveOrUpdate(entity);
         }
         catch(Exception e){
-            throw new UserSaveFailedException("can't save this user: " +e.getMessage());
+//            throw new UserSaveFailedException("can't save this user: " +e.getMessage());
         }  finally {
             session.close();
         }
