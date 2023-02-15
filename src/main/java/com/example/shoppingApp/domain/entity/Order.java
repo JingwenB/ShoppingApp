@@ -33,7 +33,7 @@ public class Order {
 
     // one to many
     @JsonIgnore
-    @OneToMany(mappedBy = "order",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @ToString.Exclude
     private Set<OrderItem> orderItems;
 
