@@ -1,7 +1,9 @@
 package com.example.transactionmanagementdemo.service;
 
+import com.example.transactionmanagementdemo.dao.OrderDao;
 import com.example.transactionmanagementdemo.dao.ProductDao;
 import com.example.transactionmanagementdemo.dao.UserDao;
+import com.example.transactionmanagementdemo.domain.entity.Order;
 import com.example.transactionmanagementdemo.domain.entity.OrderItem;
 import com.example.transactionmanagementdemo.domain.entity.Product;
 import com.example.transactionmanagementdemo.domain.entity.User;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
@@ -20,12 +23,14 @@ public class SummaryService {
 
     private ProductDao productDao;
     private UserDao userDao;
+    private OrderDao orderDao;
 
     @Autowired
     public SummaryService(ProductDao productDao,
-                          UserDao userDao) {
+                          UserDao userDao, OrderDao orderDao) {
         this.productDao = productDao;
         this.userDao = userDao;
+        this.orderDao = orderDao;
     }
 
 
@@ -108,6 +113,27 @@ public class SummaryService {
         });
 
         return products.stream().mapToInt(Product::getSold_quantity).sum();
+    }
+
+
+    @Transactional
+    public List<Product> mostKRecentPurchaseByUser( int user_id, int k){
+
+        List<Order> orders = orderDao.getAll()
+                .stream()
+                .filter(order -> order.getUser().getId() == user_id && Objects.equals(order.getOrder_status(), "completed"))
+                .sorted((a,b)-> b.getDate_placed().compareTo(a.getDate_placed()))
+                .collect(Collectors.toList());
+
+        List<Product> products = orders
+                .stream()
+                .flatMap(order -> order.getOrderItems().stream().map(OrderItem::getProduct).sorted(Comparator.comparingInt(Product::getId)))
+
+                .distinct()
+                .limit(k)
+                .collect(Collectors.toList());
+
+        return products;
     }
 
 

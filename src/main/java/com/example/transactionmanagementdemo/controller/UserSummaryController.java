@@ -52,12 +52,23 @@ public class UserSummaryController {
     }
 
     @GetMapping("/product/topItem")
-    public AllProductResponse getTop3Item(@RequestParam(value = "user_id") Integer user_id,
+    public AllProductResponse getTopKItem(@RequestParam(value = "user_id") Integer user_id,
                                           @RequestParam(value = "num") Integer num){
         List<Product> products = summaryService.topKPurchasedProductByUser(user_id, num);
 
         return AllProductResponse.builder()
                 .message("return top frequent purchased item by user: " + user_id)
+                .products(products)
+                .build();
+    }
+
+    @GetMapping("/product/mostRecentProduct")
+    public AllProductResponse getMostRecentKProduct(@RequestParam(value = "user_id") Integer user_id,
+                                          @RequestParam(value = "num") Integer num){
+        List<Product> products = summaryService.mostKRecentPurchaseByUser(user_id, num);
+
+        return AllProductResponse.builder()
+                .message("return most recent purchased item by user: " + user_id)
                 .products(products)
                 .build();
     }
