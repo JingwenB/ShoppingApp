@@ -25,21 +25,21 @@ public class OrderItemService {
         return orderItemDao.getAll();
     }
 
-    @Transactional
-    public List<OrderItem> getByUserId(int id){
-
-        return orderItemDao.getAll().stream().filter(
-                (order) -> order.getOrder().getUser().getId() == id).
-                sorted(Comparator.comparing(a -> a.getOrder().getDate_placed())).collect(Collectors.toList());
-    }
-
-    @Transactional
-    public List<OrderItem> getByOrderId(int id){
-        List<OrderItem> orderItems =  orderItemDao.getAll();
-
-        return orderItems.stream().filter(
-                (order)->order.getOrder().getId() == id).collect(Collectors.toList());
-    }
+//    @Transactional
+//    public List<OrderItem> getByUserId(int id){
+//
+//        return orderItemDao.getAll().stream().filter(
+//                (order) -> order.getOrder().getUser().getId() == id).
+//                sorted(Comparator.comparing(a -> a.getOrder().getDate_placed())).collect(Collectors.toList());
+//    }
+//
+//    @Transactional
+//    public List<OrderItem> getByOrderId(int id){
+//        List<OrderItem> orderItems =  orderItemDao.getAll();
+//
+//        return orderItems.stream().filter(
+//                (order)->order.getOrder().getId() == id).collect(Collectors.toList());
+//    }
 
 
 

@@ -58,18 +58,18 @@ public class ProductDao extends GenericDao<Product> {
         session.close();
     }
 
-    public void delete(Product entity){
-        Session session = sessionFactory.openSession();
-        try{
-            session = sessionFactory.openSession();
-            session.delete(entity);
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
-    }
+//    public void delete(Product entity){
+//        Session session = sessionFactory.openSession();
+//        try{
+//            session = sessionFactory.openSession();
+//            session.delete(entity);
+//        }
+//        catch (Exception e){
+//            e.printStackTrace();
+//        } finally {
+//            session.close();
+//        }
+//    }
 
 
 

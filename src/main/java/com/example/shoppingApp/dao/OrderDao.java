@@ -12,7 +12,6 @@ import com.example.shoppingApp.exception.OrderCancelFailedException;
 import com.example.shoppingApp.exception.OrderCompleteFailedException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.omg.CORBA.Environment;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
@@ -33,7 +32,7 @@ public class OrderDao extends GenericDao<Order> {
         Order order = session.get(Order.class, id);
         if(order == null){
             throw new NotFoundException(
-                    String.format("Can not find object class: %d, with id: %d", Order.class, id));
+                    String.format("Can not find object class: %s, with id: %d", Order.class, id));
         }
 
         if (Objects.equals(order.getOrder_status(), "processing")) {
@@ -56,7 +55,7 @@ public class OrderDao extends GenericDao<Order> {
         Order order = session.get(Order.class, id);
         if(order == null){
             throw new NotFoundException(
-                    String.format("Can not find object class: %d, with id: %d", Order.class, id));
+                    String.format("Can not find object class: %s, with id: %d", Order.class, id));
         }
 
         if (!Objects.equals(order.getOrder_status(), "canceled") &&

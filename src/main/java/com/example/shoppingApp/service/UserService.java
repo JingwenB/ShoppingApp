@@ -29,9 +29,6 @@ public class UserService {
     @Transactional
     public User getById(int id)  {
          User user = (User) userDao.getById(id);
-//         if(user == null){
-//             throw new UserGetFailedException("can't find user with id: " + id);
-//         }
         return user;
     }
 
@@ -53,8 +50,4 @@ public class UserService {
                 .filter((product -> product.getStock_quantity() > 0)).collect(Collectors.toList());
     }
 
-    public List<Product> deleteProductFromUserWatchList(Integer user_id, Integer product_id) {
-        userDao.deleteProduct(user_id, product_id);
-        return getWatchListItemByUserId(user_id);
-    }
 }

@@ -45,13 +45,14 @@ public class ProductService {
 
     @Transactional
     public List<Product> getAllAsUser(){
-        List<Product> products = productDao.getAll().stream().filter(product -> product.getStock_quantity() > 0)
+        List<Product> products = productDao.getAll();
+        List<Product> ret = products.stream().filter(product -> product.getStock_quantity() > 0)
                 .map((product) ->{
                     product.setStock_quantity(null);
                     product.setWholesale_price(null);
                     return product;
                 }).collect(Collectors.toList());
-        return products;
+        return ret;
     }
 
     @Transactional

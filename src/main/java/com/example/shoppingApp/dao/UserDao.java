@@ -58,9 +58,9 @@ public class UserDao extends GenericDao<User> {
         }
 
         product.getUser().add(user);
-//        user.getProducts().add(product); 可以不用加
-
+        user.getProducts().add(product);
         session.persist(product);
+        session.persist(user);
         tx.commit();
         session.close();
 
