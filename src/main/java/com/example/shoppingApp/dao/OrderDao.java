@@ -7,15 +7,16 @@ import com.example.shoppingApp.domain.entity.Product;
 import com.example.shoppingApp.domain.entity.User;
 import com.example.shoppingApp.domain.request.CreateOrderRequest;
 import com.example.shoppingApp.exception.NotEnoughInventoryException;
+import com.example.shoppingApp.exception.NotFoundException;
+import com.example.shoppingApp.exception.OrderCancelFailedException;
+import com.example.shoppingApp.exception.OrderCompleteFailedException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.omg.CORBA.Environment;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 
 @Repository
@@ -29,12 +30,20 @@ public class OrderDao extends GenericDao<Order> {
     public void completeOrder(int id) {
         Session session = sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
-        Order order = session.load(Order.class, id);
+        Order order = session.get(Order.class, id);
+        if(order == null){
+            throw new NotFoundException(
+                    String.format("Can not find object class: %d, with id: %d", Order.class, id));
+        }
 
         if (Objects.equals(order.getOrder_status(), "processing")) {
             order.setOrder_status("completed");
         } else {
-//           throw new OrderUpdateFailedException();
+           throw new OrderCompleteFailedException(
+                   String.format("Current order with id: %d, can not be complete" +
+                           ", the current order status : %s is not PROCESSING", id,
+                           order.getOrder_status().toUpperCase())
+           );
         }
         System.out.println("Order after update: " + order);
         tx.commit();
@@ -44,7 +53,11 @@ public class OrderDao extends GenericDao<Order> {
     public void cancelOrder(int id) {
         Session session = sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
-        Order order = session.load(Order.class, id);
+        Order order = session.get(Order.class, id);
+        if(order == null){
+            throw new NotFoundException(
+                    String.format("Can not find object class: %d, with id: %d", Order.class, id));
+        }
 
         if (!Objects.equals(order.getOrder_status(), "canceled") &&
                 !Objects.equals(order.getOrder_status(), "completed")) {
@@ -56,8 +69,14 @@ public class OrderDao extends GenericDao<Order> {
                 p.setStock_quantity(curr_quantity + purchased_quantity);
                 session.saveOrUpdate(p);
             });
+        } else{
+            throw new OrderCancelFailedException(
+                    String.format("Current order with id: %d, can not be cancelled, " +
+                                    " the current order status : %s", id,
+                            order.getOrder_status().toUpperCase())
+            );
+
         }
-        System.out.println("Order after update: " + order);
         tx.commit();
         session.close();
     }
@@ -68,7 +87,12 @@ public class OrderDao extends GenericDao<Order> {
         Transaction tx = session.beginTransaction();
 
 
-        User user = session.load(User.class, user_id);
+        User user = session.get(User.class, user_id);
+        if(user == null){
+            throw new NotFoundException(
+                    String.format("Can not find object class: %d, with id: %d", User.class, user_id));
+        }
+
         Order order = new Order();
         order.setOrder_status("processing");
         order.setDate_placed(new Timestamp(System.currentTimeMillis()));
@@ -80,6 +104,7 @@ public class OrderDao extends GenericDao<Order> {
         // add item and product
         createOrderRequest.stream().forEach((request) -> {
             Product product = session.load(Product.class, request.getProduct_id());
+
             if (product.getStock_quantity() < request.getQuantity()) {
                 throw new NotEnoughInventoryException("product quantity not enough for (productID: " +
                         request.getProduct_id() + ")" + " with purchase quantity: " + request.getQuantity());

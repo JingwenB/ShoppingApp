@@ -2,6 +2,8 @@ package com.example.shoppingApp.dao;
 
 
 import com.example.shoppingApp.domain.entity.Product;
+import com.example.shoppingApp.exception.InvalidProductUpdateInfoException;
+import com.example.shoppingApp.exception.NotFoundException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
@@ -32,9 +34,11 @@ public class ProductDao extends GenericDao<Product> {
     public void update(Integer id, Product entity){
         Session session = sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
-        Product product_db = session.load(Product.class, id);
-
-        System.out.println("Product before update: "+ entity);
+        Product product_db = session.get(Product.class, id);
+        if(product_db == null){
+            throw new NotFoundException(
+                    String.format("Can not find object class: %s, with id: %d", Product.class, id));
+        }
 
         if(entity.getDescription() != null){
             product_db.setDescription( entity.getDescription());

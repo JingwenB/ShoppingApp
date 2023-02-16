@@ -7,6 +7,8 @@ import com.example.shoppingApp.domain.entity.Order;
 import com.example.shoppingApp.domain.entity.Product;
 import com.example.shoppingApp.domain.request.CreateOrderRequest;
 import com.example.shoppingApp.exception.NotEnoughInventoryException;
+import com.example.shoppingApp.exception.NotFoundException;
+import com.example.shoppingApp.exception.RequestPageOverTotalPageException;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,6 +42,7 @@ public class OrderService {
     public Order getById(int id){
         return orderDao.getById(id);
     }
+
     @Transactional
     public List<Order> getByUserId(int id){
         List<Order> orders =  orderDao.getAll();
@@ -81,7 +84,9 @@ public class OrderService {
         // 10/3 => 4 page, 0,1,2 | 3,4,5|6,7,8|9
         //               page 1
         if (page > totalPages){
-            // throw error
+            throw new RequestPageOverTotalPageException(
+                    String.format("Request page: %d over the total page number: %d", page, totalPages)
+            );
         }
         JSONObject ret  = new JSONObject();
         ret.put("totalPages", totalPages);

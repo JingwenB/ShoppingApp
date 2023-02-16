@@ -69,5 +69,19 @@ public class UserWatchListController {
                         data);
     }
 
+    @GetMapping(value = "/getList", params = { "page", "size"})
+    public ResponseEntity<Object> getWatchListItemByUserId(
+            @RequestParam(value = "user_id") Integer user_id,
+            @RequestParam(value = "page") int page,
+            @RequestParam(value = "size") int size){
+        JSONObject data = watchListService.getWatchListItemByUserIdPaginated(user_id,page, size);
+
+        return ResponseHandler
+                .generateResponse(
+                        "getting all products watched by user_id: " + user_id,
+                        HttpStatus.OK,
+                        data);
+    }
+
 
 }

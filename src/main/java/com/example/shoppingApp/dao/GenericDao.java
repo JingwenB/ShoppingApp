@@ -1,6 +1,9 @@
 package com.example.shoppingApp.dao;
 
 
+import com.example.shoppingApp.exception.DeleteFailedException;
+import com.example.shoppingApp.exception.NotFoundException;
+import com.example.shoppingApp.exception.SaveFailedException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +41,7 @@ public abstract class GenericDao<T> {
         return (list.isEmpty()) ? null : list;
     }
 
-    public T getById(int id){
+    public T getById(int id) throws NotFoundException {
         Session session = sessionFactory.openSession();
         Optional<T> object = null;
         try{
@@ -54,7 +57,11 @@ public abstract class GenericDao<T> {
         } finally {
             session.close();
         }
-        return (object.isPresent())? object.get() : null;
+        if(!object.isPresent()){
+            throw new NotFoundException(
+                    String.format("Can not find object class: %s, with id: %d", entityClass, id));
+        }
+        return object.get();
     }
 
     public void add(T entity)  {
@@ -63,22 +70,29 @@ public abstract class GenericDao<T> {
             session.saveOrUpdate(entity);
         }
         catch(Exception e){
-//            throw new UserSaveFailedException("can't save this user: " +e.getMessage());
+            e.printStackTrace();
+            throw new SaveFailedException(
+                    String.format("Save object class: %s,\n" +
+                            "with entity: %s", entityClass, entity));
         }  finally {
             session.close();
         }
     }
 
     public void delete(T entity){
-        Session session;
+        Session session= sessionFactory.openSession();
         try{
-            session = sessionFactory.getCurrentSession();
             session.delete(entity);
         }
         catch (Exception e){
             e.printStackTrace();
+            throw new DeleteFailedException(
+                    String.format("Delete object class: %s,\n" +
+                            "with entity: %s \n failed", entityClass, entity));
+        }
+        finally {
+            session.close();
         }
     }
-
 
 }

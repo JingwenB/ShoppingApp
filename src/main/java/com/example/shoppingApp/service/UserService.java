@@ -3,8 +3,6 @@ package com.example.shoppingApp.service;
 import com.example.shoppingApp.dao.UserDao;
 import com.example.shoppingApp.domain.entity.Product;
 import com.example.shoppingApp.domain.entity.User;
-import com.example.shoppingApp.exception.UserGetFailedException;
-import com.example.shoppingApp.exception.UserSaveFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,21 +27,21 @@ public class UserService {
     }
 
     @Transactional
-    public User getById(int id) throws UserGetFailedException{
+    public User getById(int id)  {
          User user = (User) userDao.getById(id);
-         if(user == null){
-             throw new UserGetFailedException("can't find user with id: " + id);
-         }
+//         if(user == null){
+//             throw new UserGetFailedException("can't find user with id: " + id);
+//         }
         return user;
     }
 
     @Transactional
-    public void saveUser(User user) throws UserSaveFailedException {
+    public void saveUser(User user) {
         userDao.add(user);
     }
 
     @Transactional
-    public void deleteUser(int id) throws UserGetFailedException {
+    public void deleteUser(int id)  {
         User user = getById(id);
         userDao.delete(user);
     }
