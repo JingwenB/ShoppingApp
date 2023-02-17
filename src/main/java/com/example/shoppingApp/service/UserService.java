@@ -31,23 +31,23 @@ public class UserService {
          User user = (User) userDao.getById(id);
         return user;
     }
-
-    @Transactional
-    public void saveUser(User user) {
-        userDao.add(user);
-    }
-
-    @Transactional
-    public void deleteUser(int id)  {
-        User user = getById(id);
-        userDao.delete(user);
-    }
-
-    public List<Product> getWatchListItemByUserId(Integer user_id) {
-        User u = userDao.getById(user_id);
-        return u.getProducts()
-                .stream()
-                .filter((product -> product.getStock_quantity() > 0)).collect(Collectors.toList());
-    }
+//
+//    @Transactional
+//    public void saveUser(User user) {
+//        userDao.add(user);
+//    }
+//
+//    @Transactional
+//    public void deleteUser(int id)  {
+//        User user = getById(id);
+//        userDao.delete(user);
+//    }
+//
+//    public List<Product> getWatchListItemByUserId(Integer user_id) {
+//        User u = userDao.getById(user_id);
+//        return u.getProducts()
+//                .stream()
+//                .filter((product -> product.getStock_quantity() > 0)).collect(Collectors.toList());
+//    }
 
 }

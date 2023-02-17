@@ -53,6 +53,16 @@ public class OrderService {
     }
 
     @Transactional
+    public JSONObject getByUserIdPaginated(int id, int page, int size){
+        List<Order> orders =  orderDao.getAll();
+
+        orders  = orders.stream().filter(
+                (order)->order.getUser().getId() == id).collect(Collectors.toList());
+
+        return findPaginated(orders, page, size);
+    }
+
+    @Transactional
     public Order completeOrder(int id) {
         orderDao.completeOrder(id);
         return getById(id);

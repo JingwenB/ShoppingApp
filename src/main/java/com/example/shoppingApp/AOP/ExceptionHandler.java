@@ -29,6 +29,8 @@ public class ExceptionHandler {
         return new ResponseEntity<>(
                 ErrorResponse.builder()
                         .message(e.getMessage())
+                        .exceptionType(e.toString().split(":")[0])
+                        .status(String.valueOf( HttpStatus.NOT_FOUND ))
                         .build(),
                 HttpStatus.NOT_FOUND // 404
         );
@@ -44,6 +46,8 @@ public class ExceptionHandler {
         return new ResponseEntity<>(
                 ErrorResponse.builder()
                         .message(e.getMessage())
+                        .exceptionType(e.toString().split(":")[0])
+                        .status(String.valueOf(HttpStatus.FORBIDDEN))
                         .build(),
                 HttpStatus.FORBIDDEN
         );
@@ -60,6 +64,8 @@ public class ExceptionHandler {
         return new ResponseEntity<>(
                 ErrorResponse.builder()
                         .message(e.getMessage())
+                        .exceptionType(e.toString().split(":")[0])
+                        .status(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR))
                         .build(),
                 HttpStatus.INTERNAL_SERVER_ERROR
         );
@@ -76,6 +82,8 @@ public class ExceptionHandler {
         return new ResponseEntity<>(
                 ErrorResponse.builder()
                         .message(e.getMessage())
+                        .exceptionType(e.toString().split(":")[0])
+                        .status(String.valueOf(HttpStatus.BAD_REQUEST))
                         .build(),
                 HttpStatus.BAD_REQUEST
         );

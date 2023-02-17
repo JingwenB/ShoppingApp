@@ -43,7 +43,7 @@ public class AdminSummaryController {
     }
 
     @GetMapping(value = "/order/all", params = { "page", "size"})
-    public ResponseEntity<Object> getAllProductPaginated(@RequestParam(value = "page") int page,
+    public ResponseEntity<Object> getAllOrderPaginated(@RequestParam(value = "page") int page,
                                                          @RequestParam(value = "size") int size){
         JSONObject data = orderService.getPaginatedOrder(page, size);
 
@@ -61,6 +61,18 @@ public class AdminSummaryController {
 
         JSONObject data = new JSONObject();
         data.put("orders", orders);
+        return ResponseHandler
+                .generateResponse("get all orders for user: " + user_id + " for admin preview",
+                        HttpStatus.OK,
+                        data);
+    }
+
+    @GetMapping(value = "/order/user", params = { "user_id","page",  "size"})
+    public ResponseEntity<Object> getByUserIdPaginated(@RequestParam(value = "user_id")int user_id,
+                                                   @RequestParam(value = "page") int page,
+                                                   @RequestParam(value = "size") int size ){
+        JSONObject data = orderService.getByUserIdPaginated(user_id, page, size);
+
         return ResponseHandler
                 .generateResponse("get all orders for user: " + user_id + " for admin preview",
                         HttpStatus.OK,

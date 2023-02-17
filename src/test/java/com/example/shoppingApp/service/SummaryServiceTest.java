@@ -86,5 +86,11 @@ public class SummaryServiceTest {
         verify(productDao, times(1)).getAll();
     }
 
+    @Test
+    void test_mostKRecentPurchaseByUser_success() {
+        summaryService.mostKRecentPurchaseByUser(1, 1);
+        verify(orderDao, times(1)).getAll();
+    }
+
 
 }

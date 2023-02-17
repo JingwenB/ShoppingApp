@@ -25,7 +25,7 @@ public class AdminProductController {
     @GetMapping("/all")
     public ResponseEntity<Object> getAllProduct(){
         return ResponseHandler.generateResponse(
-                "returning all products without  pagination",
+                "returning all products without pagination",
                 HttpStatus.OK,
                 productService.getAll());
     }

@@ -3,8 +3,11 @@ package com.example.shoppingApp.service;
 
 import com.example.shoppingApp.dao.OrderDao;
 import com.example.shoppingApp.domain.entity.Order;
+import com.example.shoppingApp.domain.entity.User;
 import com.example.shoppingApp.exception.RequestPageOverTotalPageException;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import net.minidev.json.JSONObject;
+import org.aspectj.weaver.ast.Or;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -57,8 +60,61 @@ public class OrderServiceTest {
     }
     @Test
     void test_getByUserId_success() {
-        orderService.getByUserId(1);
+        List<Order> orders = new ArrayList<>();
+        orders.add(
+                Order.builder()
+                        .id(1)
+                        .user(User.builder()
+                                .id(1)
+                                .build())
+                        .build());
+        orders.add(
+                Order.builder()
+                        .id(2)
+                        .user(User.builder()
+                                .id(2)
+                                .build())
+                        .build());
+
+        Mockito.when(orderDao.getAll()).thenReturn(orders);
+        List<Order> actual = orderService.getByUserId(1);
         verify(orderDao, times(1)).getAll();
+        assertEquals(1, actual.size());
+
+    }
+
+    @Test
+    void test_getByUserIdPaginated_success() {
+
+        List<Order> orders = new ArrayList<>();
+        orders.add(
+                Order.builder()
+                        .id(1)
+                        .user(User.builder()
+                                .id(1)
+                                .build())
+                        .build());
+
+        orders.add(
+                Order.builder()
+                        .id(2)
+                        .user(User.builder()
+                                .id(1)
+                                .build())
+                        .build());
+
+        Mockito.when(orderDao.getAll()).thenReturn(orders);
+        JSONObject ret = orderService.getByUserIdPaginated(1,1,1);
+
+        verify(orderDao, times(1)).getAll();
+        assertEquals(2, ret.get("totalPages"));
+        assertEquals(2, ret.get("totalItems"));
+    }
+
+    @Test
+    void test_getByUserIdPaginated_fail() {
+        assertThrows(RequestPageOverTotalPageException.class,
+                () ->orderService.getByUserIdPaginated(1,1,1));
     }
 
     @Test

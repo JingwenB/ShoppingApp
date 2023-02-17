@@ -32,6 +32,7 @@ public class User {
     private String username;
 
     @Column(name = "password",  nullable = false )
+    @ToString.Exclude
     private String password;
 
     @Column(name = "is_admin")
