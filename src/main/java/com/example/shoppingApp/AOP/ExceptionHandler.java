@@ -76,7 +76,8 @@ public class ExceptionHandler {
             InvalidProductUpdateInfoException.class,
             RequestPageOverTotalPageException.class,
             OrderCancelFailedException.class,
-            OrderCompleteFailedException.class
+            OrderCompleteFailedException.class,
+            DuplicatedProductInWatcchList.class
     })
     public ResponseEntity<ErrorResponse> handleMultipleBadRequestExceptions(Exception e){
         return new ResponseEntity<>(

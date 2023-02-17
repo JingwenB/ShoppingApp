@@ -3,10 +3,13 @@ package com.example.shoppingApp.dao;
 
 import com.example.shoppingApp.domain.entity.Product;
 import com.example.shoppingApp.domain.entity.User;
+import com.example.shoppingApp.exception.DuplicatedProductInWatcchList;
 import com.example.shoppingApp.exception.NotFoundException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
+
+import java.util.stream.Collectors;
 
 
 @Repository
@@ -55,6 +58,13 @@ public class UserDao extends GenericDao<User> {
         if(product == null){
             throw new NotFoundException(
                     String.format("Can not find object class: %s, with id: %d", Product.class, user_id));
+        }
+        if(user.getProducts()
+                .stream()
+                .map(Product::getId)
+                .collect(Collectors.toList())
+                .contains(product_id)){
+            throw new DuplicatedProductInWatcchList("this item has been added into watchlist before");
         }
 
         product.getUser().add(user);
