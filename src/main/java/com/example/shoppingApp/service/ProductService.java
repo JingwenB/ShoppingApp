@@ -8,6 +8,11 @@ import com.example.shoppingApp.exception.NotFoundException;
 import com.example.shoppingApp.exception.RequestPageOverTotalPageException;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+
 import org.springframework.stereotype.Service;
 import sun.jvm.hotspot.debugger.Page;
 
@@ -17,6 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@CacheConfig(cacheNames = "products")
 public class ProductService {
     private final ProductDao productDao;
 
@@ -26,11 +32,13 @@ public class ProductService {
     }
 
     @Transactional
+    @Cacheable()
     public List<Product> getAll(){
         return productDao.getAll();
     }
 
     @Transactional
+    @Cacheable(key = "#id")
     public Product getById(int id){
         return (Product) productDao.getById(id);
     }
@@ -56,6 +64,7 @@ public class ProductService {
     }
 
     @Transactional
+//    @CachePut(key = "#product.id")
     public List<Product> createProduct(Product product)  {
         productDao.add(product);
         return getAll();

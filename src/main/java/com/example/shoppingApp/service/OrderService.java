@@ -11,6 +11,9 @@ import com.example.shoppingApp.exception.NotFoundException;
 import com.example.shoppingApp.exception.RequestPageOverTotalPageException;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -34,6 +37,7 @@ public class OrderService {
 
 
     @Transactional
+    @Cacheable(value = "orders")
     public List<Order> getAll(){
         return orderDao.getAll();
     }
@@ -75,6 +79,7 @@ public class OrderService {
     }
 
     @Transactional
+    @CacheEvict(value = "orders", allEntries = true)
     public void createOrder(List<CreateOrderRequest> createOrderRequest,
                             Integer user_id) throws NotEnoughInventoryException {
 
