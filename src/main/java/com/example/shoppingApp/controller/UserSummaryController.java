@@ -6,10 +6,12 @@ import com.example.shoppingApp.domain.entity.Product;
 import com.example.shoppingApp.domain.response.ResponseHandler;
 import com.example.shoppingApp.service.OrderService;
 import com.example.shoppingApp.service.SummaryService;
+import com.example.shoppingApp.service.UserService;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,20 +22,23 @@ import java.util.stream.Collectors;
 public class UserSummaryController {
 
     private final OrderService orderService;
+    private final UserService userService;
     private final SummaryService summaryService;
 
     @Autowired
     public UserSummaryController(OrderService orderService,
-                                 SummaryService summaryService) {
+                                 UserService userService, SummaryService summaryService) {
         this.orderService = orderService;
+        this.userService = userService;
         this.summaryService = summaryService;
     }
 
 
     @GetMapping("/order")
-    public List<Order> getOrdersByUserId(@RequestParam(value = "user_id")
-                                                    int user_id){
-        return orderService.getByUserId(user_id);
+    public List<Order> getOrdersByUserId(){
+        String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        int id = userService.getIdByUsername(username);
+        return orderService.getByUserId(id);
     }
 
     // user view order detailsshould not see product quantity and Wholesale_price

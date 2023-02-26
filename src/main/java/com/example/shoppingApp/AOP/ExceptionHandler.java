@@ -38,20 +38,6 @@ public class ExceptionHandler {
 
 
 
-    // user login
-    @org.springframework.web.bind.annotation.ExceptionHandler(value = {
-            InvalidCredentialsException.class
-    })
-    public ResponseEntity<ErrorResponse> handleInvalidCredentialsException(Exception e){
-        return new ResponseEntity<>(
-                ErrorResponse.builder()
-                        .message(e.getMessage())
-                        .exceptionType(e.toString().split(":")[0])
-                        .status(String.valueOf(HttpStatus.FORBIDDEN))
-                        .build(),
-                HttpStatus.FORBIDDEN
-        );
-    }
 
     // user create order with not enough in stock
     // generic dao add failed, delete failed

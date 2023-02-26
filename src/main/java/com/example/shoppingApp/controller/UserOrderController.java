@@ -6,10 +6,12 @@ import com.example.shoppingApp.domain.request.CreateOrderRequest;
 import com.example.shoppingApp.domain.response.ResponseHandler;
 import com.example.shoppingApp.exception.NotEnoughInventoryException;
 import com.example.shoppingApp.service.OrderService;
+import com.example.shoppingApp.service.UserService;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,17 +23,26 @@ import java.util.stream.Collectors;
 public class UserOrderController {
 
     private final OrderService orderService;
+    private final UserService userService;
 
     @Autowired
-    public UserOrderController(OrderService orderService) {
+    public UserOrderController(OrderService orderService, UserService userService) {
         this.orderService = orderService;
+        this.userService = userService;
     }
 
 
-    @GetMapping("/user_id/{user_id}")
-    public List<Order> getOrdersByUserId(@PathVariable(value = "user_id")
-                                                    int user_id){
-        return orderService.getByUserId(user_id);
+    @GetMapping("")
+
+    public List<Order> getOrdersByUserId(
+
+    ){
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        int id = userService.getIdByUsername(username);
+
+        return orderService.getByUserId(id);
     }
 
     // user should not see product quantity and Wholesale_price
@@ -77,10 +88,13 @@ public class UserOrderController {
             @RequestBody List<CreateOrderRequest> createOrderRequest,
             @RequestParam Integer user_id) throws NotEnoughInventoryException{
 
-        orderService.createOrder(createOrderRequest, user_id);
+        String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        int id = userService.getIdByUsername(username);
+
+        orderService.createOrder(createOrderRequest, id);
 
         JSONObject data = new JSONObject();
-        data.put("All orders", orderService.getByUserId(user_id));
+        data.put("All orders", orderService.getByUserId(id));
 
         return ResponseHandler
                 .generateResponse("successfully created a order, " +

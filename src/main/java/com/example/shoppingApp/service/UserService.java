@@ -4,10 +4,12 @@ import com.example.shoppingApp.dao.UserDao;
 import com.example.shoppingApp.domain.entity.Product;
 import com.example.shoppingApp.domain.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +32,12 @@ public class UserService {
     public User getById(int id)  {
          User user = (User) userDao.getById(id);
         return user;
+    }
+
+    @Transactional
+    public int getIdByUsername(String name)  {
+        List<User> users = userDao.getAll();
+        return users.stream().filter(u -> Objects.equals(u.getUsername(), name)).findFirst().orElse(null).getId();
     }
 //
 //    @Transactional
