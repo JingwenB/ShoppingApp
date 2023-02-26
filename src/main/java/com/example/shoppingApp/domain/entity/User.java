@@ -27,6 +27,12 @@ public class User {
     @NaturalId
     private String email;
 
+    @Column(name = "firstname")
+    private String firstname;
+
+    @Column(name = "lastname")
+    private String lastname;
+
     @Column(name = "username", unique = true, nullable = false)
     @NaturalId
     private String username;
